@@ -3,18 +3,16 @@
 Element Data exporter AddOn
 
 ## Table of Contents
-
 1. [Introduction](#introduction)
 2. [Build](#build)
 3. [Installation](#installation)
 4. [Usage](#usage)
+5. [Content](#content)
 
 ## Introduction
-
 This is an ArchiCad AddOn that can export element data from ArchiCad into JSON format.
 
 ## Build
-
 What will you need?
 - [ArchiCad 27](https://graphisoft.com/downloads/archicad/install/AC27/INT/)
 - [CMake](https://cmake.org) – To generate IDE projects (3.16 minimum version is needed)
@@ -47,3 +45,16 @@ Quick Export
 - Click the "Speckle/Json Export/Quick Export" menu item
 - Click Export
 - Select a name and path for your JSON file and save
+
+## Content
+Ths JSON contains:
+- the project name on the root level
+- elements data
+
+For each element:
+- guid
+- name (this is called id in ArchiCad but is not unique)
+- type (element type)
+- built in properties organized in groups
+- user defined properties organized in groups (null if user defined no custom properties for the given element)
+
