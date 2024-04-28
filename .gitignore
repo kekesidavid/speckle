@@ -1,0 +1,11 @@
+**/build
+**/node_modules
+**/.vs
+**/.idea
+.DS_Store
+.vscode
+.vs/*
+.history
+**/INT
+*.gsm
+**/*_svg_source/

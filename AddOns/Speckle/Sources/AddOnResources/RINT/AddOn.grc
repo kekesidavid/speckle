@@ -1,0 +1,37 @@
+﻿#include "ResourceIds.hpp"
+
+/* Add-On Information */
+
+'STR#' ID_ADDON_INFO "Information" {
+/* [  1] */	"Speckle Take Home Assignment"
+/* [  2] */	"This Add-On exports the elemets into a JSON file."
+}
+
+/* Text appearing in the menu */
+
+'STR#' ID_ADDON_MENU "Menu strings" {
+/* [   ] */	"Speckle"
+/* [  1] */	"Json Export"
+/* [  2] */	"Export^E3^ED^EW^ES^EE^EI^EL^ET^EM^R"
+/* [  3] */	"Quick export^E3^ED^EW^ES^EE^EI^EL^ET^EM^R"
+}
+
+
+/* Localizable dialog resource(s) with the accompanying help resource(s) */
+#include "DGDefs.h"
+
+/*                                xOff   yOff   xSize  ySize                                */
+'GDLG' ID_EXPORT_DLG Modal | grow   40     40      600    344     "Export log" {
+/* [  1] */ Button				  490    310     100     24	    LargePlain      "Export"
+/* [  2] */ Button				  380    310     100     24	    LargePlain      "Cancel"
+/* [  3] */ UserControl			    0    0   18   18	257  0x0005  0x1600  0
+/* [  4] */ MultiSelList		   10     10     580	290 	LargePlain      PartialItems     21 HasHeader   21
+}
+
+'STR#' STR_CHECKMARK	 "checkmark" {
+/* [  1] */	"✅"
+}
+
+'STR#' STR_X	 "x" {
+/* [  1] */	"❌"
+}
