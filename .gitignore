@@ -8,4 +8,5 @@
 .history
 **/INT
 *.gsm
+*.bak
 **/*_svg_source/
