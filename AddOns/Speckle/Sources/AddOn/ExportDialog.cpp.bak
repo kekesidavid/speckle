@@ -129,7 +129,7 @@ void ExportDialog::UpdateListHeader()
 
 	exportList.SetHeaderItemText(ElementTypeTab, "Element Type");
 	exportList.SetHeaderItemText(ElementCountTab, "Element Count");
-	exportList.SetHeaderItemText(StatusTab, "Export");
+	exportList.SetHeaderItemText(StatusTab, "Export Status");
 	exportList.SetHeaderItemText(PopupTab, "");
 }
 
