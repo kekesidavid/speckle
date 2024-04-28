@@ -41,9 +41,9 @@ Export
 - Click the "Speckle/Json Export/Export" menu item
 - Select the Element types to export in the dialog
 - Click Export
-- Name your JSON file give a path and save
+- Select a name and path for your JSON file and save
 
 Quick Export
 - Click the "Speckle/Json Export/Quick Export" menu item
 - Click Export
-- Name your JSON file give a path and save
+- Select a name and path for your JSON file and save
