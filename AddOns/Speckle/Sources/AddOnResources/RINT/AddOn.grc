@@ -23,15 +23,7 @@
 /*                                xOff   yOff   xSize  ySize                                */
 'GDLG' ID_EXPORT_DLG Modal | grow   40     40      600    344     "Export log" {
 /* [  1] */ Button				  490    310     100     24	    LargePlain      "Export"
-/* [  2] */ Button				  380    310     100     24	    LargePlain      "Cancel"
+/* [  2] */ Button				  380    310     100     24	    LargePlain      "Close"
 /* [  3] */ UserControl			    0    0   18   18	257  0x0005  0x1600  0
 /* [  4] */ MultiSelList		   10     10     580	290 	LargePlain      PartialItems     21 HasHeader   21
-}
-
-'STR#' STR_CHECKMARK	 "checkmark" {
-/* [  1] */	"✅"
-}
-
-'STR#' STR_X	 "x" {
-/* [  1] */	"❌"
 }

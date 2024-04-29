@@ -79,9 +79,11 @@ static const std::unordered_map<API_ElemTypeID, std::string> elementTypeToString
     {API_ExternalElemID, "ExternalElem"}
 };
 
-std::string ElementTypeToStringConverter::ElementTypeToString(API_ElemTypeID type) {
+std::string ElementTypeToStringConverter::ElementTypeToString(API_ElemTypeID type) 
+{
     auto it = elementTypeToStringMap.find(type);
-    if (it != elementTypeToStringMap.end()) {
+    if (it != elementTypeToStringMap.end()) 
+    {
         return it->second;
     }
     return "Unknown Element Type";

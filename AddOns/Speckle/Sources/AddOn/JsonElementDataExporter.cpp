@@ -59,8 +59,10 @@ void JsonElementDataExporter::WriteJsonToFile(const nlohmann::json& jsonData, co
 {
     std::ofstream outputFile(filePath);
 
-    if (!outputFile.is_open()) {
-        std::cerr << "Error: Unable to open file for writing: " << filePath << std::endl;
+    if (!outputFile.is_open()) 
+	{
+		std::string msg = "Error: Unable to open file for writing: " + filePath;
+		DG::ErrorAlert(msg.c_str(), "", "OK");
         return;
     }
 

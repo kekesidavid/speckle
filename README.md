@@ -47,7 +47,7 @@ Quick Export
 - Select a name and path for your JSON file and save
 
 ## Content
-Ths JSON contains:
+The JSON contains:
 - the project name on the root level
 - elements data
 
