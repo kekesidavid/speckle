@@ -209,5 +209,12 @@ void ExportDialog::Export()
 	const auto& selectedElementIds = elementDataManager.GetSelectedElemetIds(inclusionFilter);
 	const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);
 
-	elementDataExporter->Export(elementJsonData);
+	if (elementDataExporter != nullptr)
+	{
+		elementDataExporter->Export(elementJsonData);
+	}
+	else
+	{
+		// TODO notify user and log this
+	}
 }
