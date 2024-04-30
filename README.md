@@ -43,7 +43,6 @@ Export
 
 Quick Export
 - Click the "Speckle/Json Export/Quick Export" menu item
-- Click Export
 - Select a name and path for your JSON file and save
 
 ## Content
