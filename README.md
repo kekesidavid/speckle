@@ -27,6 +27,7 @@ How to build the AddOn on Windows and **Visual Studio 2019**
 
 How to build the AddOn on Windows and **Visual Studio 2022**
 - make sure that your Visual Studio 2022 is installed properly and that you have the v142 toolset installed
+- (after modifying the installation, a restart may be necessary)
 ![VS 2022 Components](images/vs_2022_install.PNG)
 - open a terminal at the project root
 - run this CMake command: ```cmake -G "Visual Studio 17 2022" -T v142 -A "x64" -DAC_ADDON_LANGUAGE="INT" -DAC_API_DEVKIT_DIR="Libs\acapi27" -B build -DCMAKE_BUILD_TYPE=Debug```
