@@ -20,7 +20,7 @@ What will you need?
 - Visual Studio 2019 (v142 toolset)
 
 How to build the AddOn on Windows and **Visual Studio 2019**
-- open a terminal at the projet root
+- open a terminal at the project root
 - run this CMake command: ```cmake -G "Visual Studio 16 2019" -A "x64" -DAC_ADDON_LANGUAGE="INT" -DAC_API_DEVKIT_DIR="Libs\acapi27" -B build -DCMAKE_BUILD_TYPE=Debug```
 - ```./build/archicad-speckle.sln``` is created
 - open this solution file in Visual Studio 2019 and build the project
@@ -28,10 +28,10 @@ How to build the AddOn on Windows and **Visual Studio 2019**
 How to build the AddOn on Windows and **Visual Studio 2022**
 - make sure that your Visual Studio 2022 is installed properly and that you have the v142 toolset installed
 ![VS 2022 Components](images/vs_2022_install.PNG)
-- open a terminal at the projet root
+- open a terminal at the project root
 - run this CMake command: ```cmake -G "Visual Studio 17 2022" -T v142 -A "x64" -DAC_ADDON_LANGUAGE="INT" -DAC_API_DEVKIT_DIR="Libs\acapi27" -B build -DCMAKE_BUILD_TYPE=Debug```
 - ```./build/archicad-speckle.sln``` is created
-- open this solution file in Visual Studio 2019 and build the project
+- open this solution file in Visual Studio 2022 and build the project
 
 More Help
 
