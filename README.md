@@ -17,7 +17,7 @@ What will you need?
 - [ArchiCad 27](https://graphisoft.com/downloads/archicad/install/AC27/INT/)
 - [CMake](https://cmake.org) – To generate IDE projects (3.16 minimum version is needed)
 - [Python](https://www.python.org) – For some build tools (version 2.7+ or 3.8+).
-- Visual Studio 2019 (v142 toolset)
+- Visual Studio 2019 or 2022 (v142 toolset)
 
 How to build the AddOn on Windows and **Visual Studio 2019**
 - open a terminal at the project root
