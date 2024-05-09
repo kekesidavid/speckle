@@ -58,11 +58,11 @@ private:
 	DG::MultiSelListBox exportList;
 	UC::TextPopup exportStatusPopup;
 
-	IElementDataExporter* elementDataExporter;
+	std::set<API_ElemTypeID>* inclusionFilter;
 
 public:
 
-	ExportDialog(const std::map<API_ElemTypeID, int>& elementTypes, IElementDataExporter* exporter);
+	ExportDialog(const std::map<API_ElemTypeID, int>& elementTypes, std::set<API_ElemTypeID>* filter);
 	~ExportDialog();
 	
 protected:
@@ -78,8 +78,12 @@ protected:
 	void SetPopUpAfterSelection();
 	void RebuildListContent();
 
+	
+
 private:
 
 	std::set<API_ElemTypeID> GetInclusionFilter();
+	void SetInclusionFilter();
 	void Export();
+	void CloseDialog();
 };

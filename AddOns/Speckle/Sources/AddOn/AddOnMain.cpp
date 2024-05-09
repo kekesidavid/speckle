@@ -23,10 +23,15 @@ static void	ShowExportDialog()
 
 		auto elementTypes = elementDataManager.GetSelectedElementTypes();
 
-		JsonElementDataExporter exporter;
+		std::set<API_ElemTypeID> inclusionfilter;
+		ExportDialog dialog(elementTypes, &inclusionfilter);
+		bool result = dialog.Invoke();
 
-		ExportDialog dialog(elementTypes, &exporter);
-		dialog.Invoke();
+		if (result)
+		{
+			JsonElementDataExporter exporter;
+			exporter.Export(inclusionfilter);
+		}
 	}
 	catch (const std::exception& ex)
 	{
@@ -34,7 +39,6 @@ static void	ShowExportDialog()
 		std::string msg = ex.what();
 		DG::ErrorAlert(msg.c_str(), "", "OK");
 	}
-	
 }
 
 static void	QuickExport()
@@ -49,11 +53,8 @@ static void	QuickExport()
 			return;
 		}
 
-		const auto& selectedElementIds = elementDataManager.GetSelectedElemetIds();
-		const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);
-
 		JsonElementDataExporter exporter;
-		exporter.Export(elementJsonData);
+		exporter.Export(std::nullopt);
 	}
 	catch (const std::exception& ex)
 	{

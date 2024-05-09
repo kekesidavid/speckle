@@ -1,17 +1,16 @@
 #include "ExportDialog.h"
 #include "ElementTypeToStringConverter.h"
-#include "ElementDataManager.h"
 
 #include <string>
 
 
-ExportDialog::ExportDialog(const std::map<API_ElemTypeID, int>& elementTypes, IElementDataExporter* exporter):
+ExportDialog::ExportDialog(const std::map<API_ElemTypeID, int>& elementTypes, std::set<API_ElemTypeID>* filter):
 	DG::ModalDialog(ACAPI_GetOwnResModule(), DialogResourceId, ACAPI_GetOwnResModule()),
 	exportButton(GetReference(), ExportButtonId),
 	cancelButton(GetReference(), CancelButtonId),
 	exportList(GetReference(), ListBoxId),
 	exportStatusPopup(GetReference(), PopupId),
-	elementDataExporter(exporter)
+	inclusionFilter(filter)
 {
 	exportButton.Attach(*this);
 	cancelButton.Attach(*this);
@@ -202,19 +201,31 @@ std::set<API_ElemTypeID> ExportDialog::GetInclusionFilter()
 	return inclusionFilter;
 }
 
+void ExportDialog::SetInclusionFilter()
+{
+	for (auto item : exportListItems)
+	{
+		if (item.exportStatus)
+		{
+			inclusionFilter->insert(item.elementType);
+		}
+	}
+}
+
 void ExportDialog::Export()
 {
-	ElementDataManager elementDataManager;
-	const auto& inclusionFilter = GetInclusionFilter();
-	const auto& selectedElementIds = elementDataManager.GetSelectedElemetIds(inclusionFilter);
-	const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);
-
-	if (elementDataExporter != nullptr)
+	if (inclusionFilter != nullptr)
 	{
-		elementDataExporter->Export(elementJsonData);
+		SetInclusionFilter();
+		PostCloseRequest(Accept);
 	}
 	else
 	{
 		// TODO notify user and log this
 	}
+}
+
+void ExportDialog::CloseDialog()
+{
+	PostCloseRequest(Cancel);
 }

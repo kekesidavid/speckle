@@ -4,6 +4,9 @@
 #include "PropertyManager.h"
 #include "NotImplementedException.h"
 #include "CheckError.h"
+#include "PerformanceStats.h"
+
+#include <chrono>
 
 
 PropertyManager::PropertyManager()
@@ -16,6 +19,9 @@ PropertyManager::~PropertyManager()
 
 nlohmann::json PropertyManager::GetPropertyAsJson(const API_Guid& elemId, const API_PropertyDefinition& propertyDefinition)
 {
+	auto& stats = PerformanceStats::GetInstance();
+	auto start = std::chrono::high_resolution_clock::now();
+
 	nlohmann::json propertyJson;
 
 	std::string propertyGuid = APIGuidToString(propertyDefinition.guid).ToCStr();
@@ -25,6 +31,10 @@ nlohmann::json PropertyManager::GetPropertyAsJson(const API_Guid& elemId, const 
 
 	API_Property  prop = {};
 	CHECK_ERROR(ACAPI_Element_GetPropertyValue(elemId, propertyDefinition.guid, prop));
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	stats.IncreasePropertyReadTime(duration.count());
 	
 	if (propertyDefinition.valueType == API_PropertyStringValueType && propertyDefinition.collectionType == API_PropertySingleCollectionType)
 	{
@@ -60,6 +70,9 @@ nlohmann::json PropertyManager::GetPropertyAsJson(const API_Guid& elemId, const 
 
 nlohmann::json PropertyManager::GetPropertyListAsJson(const API_Guid& elemId, const std::vector<API_PropertyDefinition>& propertyDefinitionList)
 {
+	auto& stats = PerformanceStats::GetInstance();
+	auto start = std::chrono::high_resolution_clock::now();
+
 	nlohmann::json propertyListJson;
 
 	for (const auto& propertyDefinition : propertyDefinitionList)
@@ -73,12 +86,16 @@ nlohmann::json PropertyManager::GetPropertyListAsJson(const API_Guid& elemId, co
 				propertyListJson[propertyGroupName].push_back(propertyJson);
 			}
 		}
-		catch (const NotImplementedException& ex)
+		catch (const NotImplementedException&)
 		{
 			// TODO handle this
-			std::cout << ex.what();
+			//std::cout << ex.what();
 		}
 	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	stats.IncreasePropertyListBuildTime(duration.count());
 
 	return propertyListJson;
 }

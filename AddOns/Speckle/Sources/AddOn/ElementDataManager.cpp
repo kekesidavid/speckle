@@ -6,6 +6,9 @@
 #include "NotImplementedException.h"
 #include "ElementTypeToStringconverter.h"
 #include "CheckError.h"
+#include "PerformanceStats.h"
+
+#include <chrono>
 
 static API_Element GetElementByGuid(const API_Guid& guid)
 {
@@ -128,16 +131,45 @@ nlohmann::json ElementDataManager::GetElementDataAsJson(const API_Guid& elemId)
 
 nlohmann::json ElementDataManager::GetElementDataListAsJson(const std::vector<API_Guid>& elemIds)
 {
+	auto& stats = PerformanceStats::GetInstance();
+	auto start = std::chrono::high_resolution_clock::now();
+
 	nlohmann::json elementsDataJson;
+
+	int	phaseNum = 1;
+	GS::UniString title = "Exporting elements data";
+	GS::UniString subtitle = "progress";
+	bool showPercent = true;
+	API_ProcessControlTypeID pid = API_MenuCommandDisabled;
+	int total = static_cast<int>(elemIds.size());
+	
+	ACAPI_ProcessWindow_InitProcessWindow(&title, &phaseNum, &pid);
+	ACAPI_ProcessWindow_SetNextProcessPhase(&subtitle, &total, &showPercent);
 	
 	API_ProjectInfo projectInfo{};
 	CHECK_ERROR(ACAPI_ProjectOperation_Project(&projectInfo));
 	elementsDataJson["_project name"] = projectInfo.projectName->ToCStr();
 
+	int processed = 0;
 	for (const API_Guid& elemId : elemIds)
 	{
 		elementsDataJson["elements"].push_back(GetElementDataAsJson(elemId));
+		
+		ACAPI_ProcessWindow_SetProcessValue(&processed);
+		processed++;
+
+		TIWait(0.01);
+		if (ACAPI_ProcessWindow_IsProcessCanceled())
+		{
+			break;
+		}
 	}
+
+	ACAPI_ProcessWindow_CloseProcessWindow();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	stats.IncreaseJsonBuildTime(duration.count());
 
 	return elementsDataJson;
 }

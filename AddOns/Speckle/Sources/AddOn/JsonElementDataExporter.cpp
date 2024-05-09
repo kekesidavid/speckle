@@ -3,10 +3,13 @@
 #include "DGFileDialog.hpp"
 #include "JsonElementDataExporter.h"
 #include "json.hpp"
+#include "ElementDataManager.h"
+#include "PerformanceStats.h"
 
 #include <iostream>
 #include <fstream>
 #include <optional>
+#include <chrono>
 
 static std::optional<std::string> GetSaveLocation()
 {
@@ -37,15 +40,21 @@ static std::optional<std::string> GetSaveLocation()
 	}
 }
 
-
-void JsonElementDataExporter::Export(const nlohmann::json& elementsData)
+void JsonElementDataExporter::Export(std::optional<std::set<API_ElemTypeID>> inclusionFilter)
 {
 	const auto& filePath = GetSaveLocation();
+
+	auto& stats = PerformanceStats::GetInstance();
+	auto start = std::chrono::high_resolution_clock::now();
+
 	if (filePath)
 	{
 		try
 		{
-			WriteJsonToFile(elementsData, filePath.value());
+			ElementDataManager elementDataManager;			
+			const auto& selectedElementIds = elementDataManager.GetSelectedElemetIds(inclusionFilter);	
+			const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);		
+			WriteJsonToFile(elementJsonData, filePath.value());
 		}
 		catch (const std::exception& ex)
 		{
@@ -53,10 +62,24 @@ void JsonElementDataExporter::Export(const nlohmann::json& elementsData)
 			DG::ErrorAlert(msg.c_str(), "", "OK");
 		}
 	}
+	else
+	{
+		// no filePath given, do nothing
+	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	stats.IncreaseExportTime(duration.count());
+
+	stats.PrintStats();
+	stats.Clear();
 }
 
 void JsonElementDataExporter::WriteJsonToFile(const nlohmann::json& jsonData, const std::string& filePath)
 {
+	auto& stats = PerformanceStats::GetInstance();
+	auto start = std::chrono::high_resolution_clock::now();
+
     std::ofstream outputFile(filePath);
 
     if (!outputFile.is_open()) 
@@ -67,8 +90,11 @@ void JsonElementDataExporter::WriteJsonToFile(const nlohmann::json& jsonData, co
     }
 
     outputFile << std::setw(4) << jsonData << std::endl;
-
     outputFile.close();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	stats.IncreaseFileIOTime(duration.count());
 
 	std::string msg = "JSON data successfully written to file: " + filePath;
     DG::InformationAlert(msg.c_str(), "", "OK");
