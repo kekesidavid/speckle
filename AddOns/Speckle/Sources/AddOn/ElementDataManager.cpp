@@ -161,7 +161,8 @@ nlohmann::json ElementDataManager::GetElementDataListAsJson(const std::vector<AP
 		TIWait(0.01);
 		if (ACAPI_ProcessWindow_IsProcessCanceled())
 		{
-			break;
+			//break;
+			return {};
 		}
 	}
 

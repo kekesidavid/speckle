@@ -53,7 +53,14 @@ void JsonElementDataExporter::Export(std::optional<std::set<API_ElemTypeID>> inc
 		{
 			ElementDataManager elementDataManager;			
 			const auto& selectedElementIds = elementDataManager.GetSelectedElemetIds(inclusionFilter);	
-			const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);		
+			const auto& elementJsonData = elementDataManager.GetElementDataListAsJson(selectedElementIds);
+
+			if (elementJsonData.empty())
+			{
+				DG::ErrorAlert("Nothing to write, elementJsonData was empty!", "", "OK");
+				return;
+			}
+
 			WriteJsonToFile(elementJsonData, filePath.value());
 		}
 		catch (const std::exception& ex)

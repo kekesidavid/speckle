@@ -4,13 +4,107 @@
 #include "ElementDataManager.h"
 #include "JsonElementDataExporter.h"
 
+#include <chrono>
+
 static void ShowNothingSelectedWarning()
 {
 	DG::WarningAlert("Nothing is selected. Please select items to export!", "", "OK");
 }
 
+enum class PropertyValueReadMode { OneByOne, Batched };
+
+static GSErrCode GetAllPropertyValuesBatched(const API_Guid& elemGuid, GS::Array<API_PropertyValue>& values)
+{
+	GS::Array<API_PropertyDefinition> definitions;
+	GSErrCode error = ACAPI_Element_GetPropertyDefinitions(elemGuid, API_PropertyDefinitionFilter_FundamentalBuiltIn, definitions);
+	if (error == NoError)
+	{
+		GS::Array<API_Property>  properties;
+		error = ACAPI_Element_GetPropertyValues(elemGuid, definitions, properties);
+		if (error == NoError) 
+		{
+			for (UInt32 i = 0; i < properties.GetSize(); i++) 
+			{
+				if (properties[i].isDefault) 
+				{
+					values.Push(properties[i].definition.defaultValue.basicValue);
+				}
+				else 
+				{
+					values.Push(properties[i].value);
+				}
+			}
+		}
+	}
+
+	return error;
+}
+
+static GSErrCode GetAllPropertyValuesOneByOne(const API_Guid& elemGuid, GS::Array<API_PropertyValue>& values)
+{
+	GS::Array<API_PropertyDefinition> definitions;
+	GSErrCode error = ACAPI_Element_GetPropertyDefinitions(elemGuid, API_PropertyDefinitionFilter_FundamentalBuiltIn, definitions);
+	if (error == NoError) 
+	{
+		GS::Array<API_Property>  properties;
+
+		for (const auto& def : definitions)
+		{
+			API_Property prop;
+			ACAPI_Element_GetPropertyValue(elemGuid, def.guid, prop);
+			if (prop.isDefault)
+			{
+				values.Push(def.defaultValue.basicValue);
+			}
+			else
+			{
+				values.Push(prop.value);
+			}
+		}
+	}
+
+	return error;
+}
+
+static bool Test(bool testing, PropertyValueReadMode mode)
+{
+	if (!testing)
+		return false;
+
+	ElementDataManager elementDataManager;
+
+	if (!elementDataManager.IsAnythingSelected())
+	{
+		ShowNothingSelectedWarning();
+		return true;
+	}
+
+	auto start = std::chrono::high_resolution_clock::now();
+
+	const auto& elemIds = elementDataManager.GetSelectedElemetIds();
+	for (const auto& i : elemIds)
+	{
+		GS::Array<API_PropertyValue> values;
+		if (mode == PropertyValueReadMode::Batched)
+		{
+			GetAllPropertyValuesBatched(i, values);
+		}
+		else
+		{
+			GetAllPropertyValuesOneByOne(i, values);
+		}
+	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+
+	return true;
+}
+
 static void	ShowExportDialog()
 {
+	if (Test(false, PropertyValueReadMode::OneByOne)) return;
+
 	try
 	{
 		ElementDataManager elementDataManager;
@@ -43,6 +137,8 @@ static void	ShowExportDialog()
 
 static void	QuickExport()
 {
+	if (Test(true, PropertyValueReadMode::Batched)) return;
+
 	try
 	{
 		ElementDataManager elementDataManager;
