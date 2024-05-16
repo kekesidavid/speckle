@@ -15,12 +15,29 @@ enum class PropertyValueReadMode { OneByOne, Batched };
 
 static GSErrCode GetAllPropertyValuesBatched(const API_Guid& elemGuid, GS::Array<API_PropertyValue>& values)
 {
+	double sum1 = 0;
+	double sum2 = 0;
+
 	GS::Array<API_PropertyDefinition> definitions;
+	auto t1 = std::chrono::high_resolution_clock::now();
 	GSErrCode error = ACAPI_Element_GetPropertyDefinitions(elemGuid, API_PropertyDefinitionFilter_FundamentalBuiltIn, definitions);
+	auto t2 = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<double> duration1 = t2 - t1;
+	sum1 += static_cast<double>(duration1.count());
+
 	if (error == NoError)
 	{
 		GS::Array<API_Property>  properties;
+		auto t3 = std::chrono::high_resolution_clock::now();
 		error = ACAPI_Element_GetPropertyValues(elemGuid, definitions, properties);
+		auto t4 = std::chrono::high_resolution_clock::now();
+
+		std::chrono::duration<double> duration2 = t4 - t3;
+		//sum2 += duration2.count();
+		sum2 += static_cast<double>(duration2.count());
+
+
 		if (error == NoError) 
 		{
 			for (UInt32 i = 0; i < properties.GetSize(); i++) 
@@ -103,7 +120,9 @@ static bool Test(bool testing, PropertyValueReadMode mode)
 
 static void	ShowExportDialog()
 {
-	if (Test(false, PropertyValueReadMode::OneByOne)) return;
+	bool b = false;
+	if (Test(b, PropertyValueReadMode::OneByOne)) 
+		return;
 
 	try
 	{
